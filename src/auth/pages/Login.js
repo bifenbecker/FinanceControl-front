@@ -12,7 +12,7 @@ const Login = (props) => {
     const [errorEmail, setErrorEmail] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
 
-    const validate_date = (email: string, password: string) => {
+    const validate_date = (email, password) => {
 
         if(password.length === 0){
             setErrorPassword('Password is empty')
@@ -40,10 +40,10 @@ const Login = (props) => {
         setErrorEmail('');
 
         if (validate_date(email, password) === true){
-            let response = await login(JSON.stringify({
+            let response = await login({
                 email,
                 password
-            }));
+            });
             let content = await response.json();
             if(content.password !== undefined){
                 setErrorPassword(content.password);

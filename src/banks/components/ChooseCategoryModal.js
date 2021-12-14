@@ -28,15 +28,6 @@ const ChooseCategoryModal = (props) => {
     const handleClose = () => {
         props.setOpen(false);
     }
-
-    const show = () => {
-        if(isClickedCreateCategory === true) {
-            setIsClickedCreateCategory(false);
-        }
-        else{
-            setIsClickedCreateCategory(true)
-        }
-    }
     
     const add_category = async (e) => {
         
@@ -84,7 +75,7 @@ const ChooseCategoryModal = (props) => {
                         />
                     </Box>
                     : 
-                    <Fab sx={{ color: 'success.dark', bgcolor: '#B9C4C9', mr: 3}} aria-label="add" onClick={show}>
+                    <Fab sx={{ color: 'success.dark', bgcolor: '#B9C4C9', mr: 3}} aria-label="add" onClick={setIsClickedCreateCategory(!isClickedCreateCategory)}>
                         <AddIcon />
                     </Fab>
                 }

@@ -51,9 +51,6 @@ const CreateBill = (props) => {
                 if(response.status === 200 || response.status === 202){
                     setError('');
                 }
-                else if(response.status === 401){
-                    window.location.reload();
-                }
                 else{
                     const content = await response.json();
                     setError(content['msg']);
@@ -80,7 +77,6 @@ const CreateBill = (props) => {
                         id="outlined-required"
                         label="Name Required"
                         placeholder="Name"
-                        // helperText={errorUserName}
                         onChange={e => setBankName(e.target.value)} 
                     />
                 </div>

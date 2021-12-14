@@ -71,7 +71,7 @@ const BillPrev = (props) => {
 
 
 const ListBills = (props) => {
-    const [billList, setBillList] = useState(undefined);
+    const [billList, setBillList] = useState();
 
     useEffect(() => {
         (

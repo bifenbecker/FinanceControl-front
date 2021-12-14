@@ -20,7 +20,6 @@ const style = {
 const ProfileModal = (props) => {
     return (
         <div>
-
         <Modal
             open={props.openModal}
             onClose={props.handleClose}

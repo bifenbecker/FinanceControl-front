@@ -64,7 +64,7 @@ const Register = (props) => {
         setErrorPassword('');
         setErrorEmail('');
 
-        if(validate_date(name, email, password, username) === true){
+        if(validate_date(name, email, password, username) == true){
             const response = await register(JSON.stringify({
                 username,
                 name,

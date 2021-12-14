@@ -17,8 +17,7 @@ const BillList = (props) => {
     let list;
 
     
-    if(props.billList[0] !== undefined) {
-        
+    if(props.billList[0] !== undefined) {    
         list = props.billList.map((bill) => {
             // let convertedBalance = convertValue(props.bill.currency, props.settings.currency.name, props.bill.balance) + props.settings.currency.char;
             return (

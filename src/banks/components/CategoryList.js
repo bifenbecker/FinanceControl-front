@@ -13,7 +13,7 @@ const CategoryList = (props) => {
         props.setCategory(category);
         props.handleClose();
     };
-    let list;
+    let list = null;
 
     
     if(props.categoryList[0] !== undefined) {
@@ -39,10 +39,6 @@ const CategoryList = (props) => {
             }
         })
     }
-    else{
-        list = null;
-    }
-
     return (
         <Box sx={{ width: '100%', height: '80%', maxWidth: 360, bgcolor: '#52958B', fontWeight: 800, mb: 2 }} >
             <List

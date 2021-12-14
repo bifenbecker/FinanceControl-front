@@ -8,7 +8,7 @@ import { get_user } from './auth/utils';
 
 
 function App() {
-    const [user, setUser] = useState(undefined);
+    const [user, setUser] = useState();
     document.title = 'Finance Contorol';
     useEffect(() => {
           (

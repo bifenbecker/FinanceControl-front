@@ -45,8 +45,7 @@ const UserInfo = (props) => {
                     </div>
                 </Box>
     }
-    else if(props.isEdit === true){
-        
+    else{
         list = <form ref={props.formRef}>
                 <Box sx={{ '& button': { m: 1 } }}>
                     <div className="m-5">
@@ -83,9 +82,7 @@ const UserInfo = (props) => {
     }
 
     return (
-        <div>
-            {props.user? list: ''}
-        </div>
+        {props.user && list? list: null}
     );
 }
 
@@ -109,7 +106,7 @@ const Home = (props) => {
             if(email !== props.user.email && email !== ''){
                 new_data['email'] = email;
             }
-            if(JSON.stringify(new_data) !== '{}' && localStorage.getItem('access_token') !== undefined){
+            if(Object.keys(new_data).length === 0 && localStorage.getItem('access_token') !== undefined){
                 const request = edit_user;
                 let response = await request(new_data);
                 if(response !== undefined){
@@ -124,10 +121,7 @@ const Home = (props) => {
                     }
                 }
                 
-            }
-            else{
-                window.location.reload();
-            }       
+            }      
             setEditState(false);
         }
         else{

@@ -18,15 +18,15 @@ import {category_list, bill_list, add_operation} from '../utils'
 
 export default function AddOperation(props) {
     const [navValue, setNavValue] = useState('1');
-    const [isIncome, setIsIncome] = React.useState(false);
-    const [value, setValue] = React.useState(0.0);
-    const [category, setCategory] = React.useState(undefined);
-    const [categoryList, setCategoryList] = React.useState(undefined);
-    const [billList, setBillList] = React.useState(undefined);
-    const [bill, setBill] = React.useState(props.bill);
-    const [date, setDate] = React.useState(new Date());
-    const [description, setDescription] = React.useState('');
-    const [error, setError] = React.useState(undefined);
+    const [isIncome, setIsIncome] = useState(false);
+    const [value, setValue] = useState(0.0);
+    const [category, setCategory] = useState();
+    const [categoryList, setCategoryList] = useState();
+    const [billList, setBillList] = useState();
+    const [bill, setBill] = useState(props.bill);
+    const [date, setDate] = useState(new Date());
+    const [description, setDescription] = useState('');
+    const [error, setError] = useState();
 
     const [openChooseCategoryModal, setChooseCategoryModal] = React.useState(false);
     const [openChooseBillModal, setChooseBillModal] = React.useState(false);
@@ -65,29 +65,23 @@ export default function AddOperation(props) {
             async () => {
                 if(localStorage.getItem('access_token') !== null){
                     if(categoryList === undefined && billList === undefined && isSendRequest === false){
-                        let request = await category_list;
-                        let response = await request();
-                        
-                        if(response !== undefined){
-                            if(response.status === 200){
-                                const content = await response.json();
+                        const request_category_list = await category_list;
+                        const request_bill_list = await bill_list;
+                        const [response_category_list, response_bill_list] = await Promise.all([request_category_list, request_bill_list])
+                        if(response_category_list !== undefined){
+                            if(response_category_list.status === 200){
+                                const content = await response_category_list.json();
                                 setCategoryList(content.map((category) => category));
                             }
                         }
-                        request = await bill_list;
-                        response = await request();
-                        
-                        if(response !== undefined){
-                            if(response.status === 200){
-                                const content = await response.json();
+                        if(response_bill_list !== undefined){
+                            if(response_bill_list.status === 200){
+                                const content = await response_bill_list.json();
                                 setBillList(content.map((bill) => bill));
                             }
                         }
-                        
                         setIsSendRequest(true);
                     }
-                    
-                    
                 }
             }
         )();

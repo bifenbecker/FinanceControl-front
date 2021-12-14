@@ -75,11 +75,11 @@ const fabStyle = {
 const BillView = (props) => {
     
     const theme = useTheme();
-    const [value, setValue] = React.useState(0);
-    const [openAddOperationModal, setAddOperationModal] = React.useState(false);
+    const [value, setValue] = useState(0);
+    const [openAddOperationModal, setAddOperationModal] = useState(false);
 
-    const [newName, setNewName] = useState(undefined);
-    const [newBalance, setNewBalance] = useState(undefined);
+    const [newName, setNewName] = useState();
+    const [newBalance, setNewBalance] = useState();
 
     const handleClose = (e) => {
         setAddOperationModal(false);
@@ -101,9 +101,9 @@ const BillView = (props) => {
         exit: theme.transitions.duration.leavingScreen,
     };
 
-    const [operations, setOperations] = useState(undefined);
-    const [incomeValue, setIncomeValue] = useState(undefined);
-    const [paymentValue, setPaymentValue] = useState(undefined);
+    const [operations, setOperations] = useState();
+    const [incomeValue, setIncomeValue] = useState();
+    const [paymentValue, setPaymentValue] = useState();
     useEffect(() => {
         (
             async () => {
@@ -114,8 +114,8 @@ const BillView = (props) => {
                     setOperations(content.map((operation) => {
                         var convertedValue = convertValue(operation.currency, props.settings.currency.name, operation.value);
                         var currencyChar = props.settings.currency.char;
-                        operation['convertedValue'] = convertedValue;
-                        operation['char'] =  currencyChar
+                        operation.convertedValue = convertedValue;
+                        operation.char =  currencyChar
                         return operation;
                     }))
                     let income_operations = content.filter((value) => value.isIncome === true);
@@ -306,10 +306,9 @@ const BillView = (props) => {
                             }}
                             unmountOnExit
                         >
-                            <Fab variant={fab.label}  aria-label={fab.label} color={fab.color} onClick={fab.onClick}>{/* sx={fab.sx} */}
+                            <Fab variant={fab.label}  aria-label={fab.label} color={fab.color} onClick={fab.onClick}>
                                 {fab.icon}
                             </Fab>
-                            
                         </Zoom>
                     ))}
                 </Box>

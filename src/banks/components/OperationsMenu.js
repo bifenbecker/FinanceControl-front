@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 
 import Menu from '@mui/material/Menu';
@@ -16,7 +16,7 @@ import AddOperationModal from './AddOperationModal';
 
 
 const OperationsMenu = (props) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const [openAddOperationModal, setAddOperationModal] = React.useState(false);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -30,7 +30,6 @@ const OperationsMenu = (props) => {
     return (
         <React.Fragment>
         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-            
             <Tooltip title="Operations menu">
             <Tab onClick={handleClick} icon={<MenuIcon />} label="Operations" value="-" />
             </Tooltip>
@@ -39,7 +38,6 @@ const OperationsMenu = (props) => {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            // onClick={handleClose}
             PaperProps={{
             elevation: 0,
             sx: {

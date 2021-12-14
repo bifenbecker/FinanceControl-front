@@ -1,7 +1,7 @@
 import fx from 'money'
 import { checkToken } from '../auth/utils';
+import {HOST} from '../auth/utils';
 
-const HOST = 'http://localhost:10000';
 
 const SERVICE_NAME = 'bankAccounts';
 

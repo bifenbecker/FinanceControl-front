@@ -32,7 +32,7 @@ const ProfileMenu = (props) => {
 
 
     return (
-        <React.Fragment>
+        <>
         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
             <Tooltip title="Account settings">
             <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
@@ -75,12 +75,12 @@ const ProfileMenu = (props) => {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-            <MenuItem onClick={e => setOpenProfileModal(true)}>
+            <MenuItem onClick={setOpenProfileModal(true)}>
             <Avatar /> Profile
             <ProfileModal openModal={openProfileModal} setOpen={setOpenProfileModal} handleClose={handleClose} user={props.user} setUser={props.setUser}/>
             </MenuItem>
             <Divider />
-            <MenuItem onClick={e => setOpenSettingsModal(true)}>
+            <MenuItem onClick={setOpenSettingsModal(true)}>
             <ListItemIcon>
                 <Settings fontSize="small" />
             </ListItemIcon>Settings
@@ -93,7 +93,7 @@ const ProfileMenu = (props) => {
             Logout
             </MenuItem>
         </Menu>
-        </React.Fragment>
+        </>
     );
 }
 
