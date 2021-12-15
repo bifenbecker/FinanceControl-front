@@ -76,16 +76,11 @@ const ListBills = (props) => {
     useEffect(() => {
         (
             async () => {
-                const request = await bill_list;
-                const response = await request();
-                if(response !== undefined){
-                    const content = await response.json();
-                    if(response.status === 401){
-                        window.location.reload();
-                    }
-                    else if(response.status === 200){
-                        setBillList(content.map((bill) => <BillPrev settings={props.settings} bill={bill} setValue={props.setValue} setActiveBill={props.setActiveBill}/>));
-                    } 
+
+                const content = await bill_list({is_content: true});
+
+                if(content !== undefined){
+                    setBillList(content.map((bill) => <BillPrev settings={props.settings} bill={bill} setValue={props.setValue} setActiveBill={props.setActiveBill}/>));
                 }
             }
         )();

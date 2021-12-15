@@ -30,9 +30,8 @@ export async function checkToken(func) {
         }
         if(access_token !== null){
             let now = Math.floor(new Date().getTime()/1000);
-
             if(decoded_jwt.exp < now){
-                const response = await fetch(BASE_URL + 'api/refresh-tokens', {
+                await (fetch(BASE_URL + 'api/refresh-tokens', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -40,14 +39,13 @@ export async function checkToken(func) {
                     body: JSON.stringify({
                         refresh_token: localStorage.getItem('refresh_token')
                     })
-                }).then(async () => {
-                    console.log("SUCCESS")
+                })).then(async (response) => {
                     if(response.status === 200){
                         const content = await response.json();
-                        localStorage.setItem("access_token", content['access_token']);
-                        localStorage.setItem("refresh_token", content['refresh_token']);
-                        const res = await func(...args);
-                        return res;
+                        clear_tokens();
+                        localStorage.setItem("access_token", content.access_token);
+                        localStorage.setItem("refresh_token", content.refresh_token);
+                        
                     }else{
                         logout();
                     }
@@ -55,32 +53,38 @@ export async function checkToken(func) {
                     throw new Error("Failed refresh token")
                 })
             }
+            const resp = await func(...args);
+            return resp;
         }
         
     }
     
 }
 
+export async function get_response(func, is_content, ...args) {
 
-export async function get_user_f(){
-    
-    const response = await (fetch(BASE_URL + 'api/user', {
-        headers: {"jwt-assertion": localStorage.getItem('access_token')},
-    })).then(() => {
-        return response;
-    }).catch((error) => {
-        throw new Error("Faild fetch 'get user'")
+    return await func(...args).then(async (response) => {
+        return is_content === true && response !== undefined ? await response.json() : response;
+    })
+    .catch((err) => {
+        throw new Error("DEBUG - [ERROR]: " + err)
     })
 }
-export const get_user = async (...args) => {
-    const content = await checkToken(get_user_f);
+
+export async function get_user(is_content=false, ...args){
     
-    await content(...args).then((res) => {
-        return res;
-    }).catch((err) => {
-        console.error(err);
-    })
+    const request = async () => {
+        return await (fetch(BASE_URL + 'api/user', {
+            headers: {"jwt-assertion": localStorage.getItem('access_token')},
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'get user'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
+    return response;
 }
+
 
 
 export async function login(body){
@@ -88,7 +92,7 @@ export async function login(body){
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include',
-                body: body
+                body: JSON.stringify(body)
             });
     return response;
 }

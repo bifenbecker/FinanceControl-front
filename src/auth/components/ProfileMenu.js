@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -16,10 +16,10 @@ import SettingsModal from './SettingsModal';
 
 
 
-const ProfileMenu = (props) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [openProfileModal, setOpenProfileModal] = React.useState(false);
-    const [openSettingsModal, setOpenSettingsModal] = React.useState(false);
+const ProfileMenu = ({logout, user, setUser}) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [openProfileModal, setOpenProfileModal] = useState(false);
+    const [openSettingsModal, setOpenSettingsModal] = useState(false);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setOpenProfileModal(false);
@@ -29,7 +29,6 @@ const ProfileMenu = (props) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
 
     return (
         <>
@@ -44,7 +43,6 @@ const ProfileMenu = (props) => {
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            // onClick={handleClose}
             PaperProps={{
             elevation: 0,
             sx: {
@@ -75,18 +73,18 @@ const ProfileMenu = (props) => {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-            <MenuItem onClick={setOpenProfileModal(true)}>
+            <MenuItem onClick={e => setOpenProfileModal(true)}>  
             <Avatar /> Profile
-            <ProfileModal openModal={openProfileModal} setOpen={setOpenProfileModal} handleClose={handleClose} user={props.user} setUser={props.setUser}/>
+            <ProfileModal openModal={openProfileModal} handleClose={handleClose} user={user} setUser={setUser}/>
             </MenuItem>
             <Divider />
-            <MenuItem onClick={setOpenSettingsModal(true)}>
+            <MenuItem onClick={e => setOpenSettingsModal(true)}>
             <ListItemIcon>
                 <Settings fontSize="small" />
             </ListItemIcon>Settings
-            <SettingsModal openModal={openSettingsModal} setOpen={setOpenSettingsModal} handleClose={handleClose} user={props.user} setUser={props.setUser}/>
+            <SettingsModal openModal={openSettingsModal} setOpen={setOpenSettingsModal} handleClose={handleClose} user={user}/>
             </MenuItem>
-            <MenuItem onClick={props.logout}>
+            <MenuItem onClick={logout}>
             <ListItemIcon>
                 <Logout fontSize="small" />
             </ListItemIcon>

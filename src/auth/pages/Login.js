@@ -55,10 +55,11 @@ const Login = (props) => {
                 localStorage.setItem("access_token", content['access_token']);
                 localStorage.setItem("refresh_token", content['refresh_token']);
                 props.setNavValue('1');
-                let request = await get_user;
-                response = await request();
-                content = await response.json();
-                props.setUser(content);
+                response = await get_user();
+                if(response !== undefined){
+                    content = await response.json();
+                    props.setUser(content);
+                }
             }
         }
     }

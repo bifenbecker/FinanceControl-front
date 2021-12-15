@@ -1,5 +1,5 @@
 import fx from 'money'
-import { checkToken } from '../auth/utils';
+import { checkToken, get_response } from '../auth/utils';
 import {HOST} from '../auth/utils';
 
 
@@ -65,7 +65,20 @@ async function bill_list_f(){
             })
     return response;
 }
-export let bill_list = checkToken(bill_list_f);
+
+export async function bill_list(is_content=false, ...args){
+
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/list`, {
+            headers: {"jwt-assertion": localStorage.getItem('access_token')},
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'bill list'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
+    return response;
+}
 
 
 async function category_list_f(){

@@ -9,24 +9,22 @@ import { get_user } from './auth/utils';
 
 function App() {
     const [user, setUser] = useState();
+
     document.title = 'Finance Contorol';
+
     useEffect(() => {
-          (
-            async () => {
-              const content = await get_user();
-              
-              if(content !== undefined){
-                  setUser(content);
-              }
-            }
-          )();
-    }, [setUser]);
+        (
+          async () => {
+            const content = await get_user({is_content: true});
+            setUser(content);
+          }
+        )();
+    
+    }, []);
 
     return (
         <div className="App">
-            <BrowserRouter>
-                <Nav user={user} setUser={setUser} />
-            </BrowserRouter>
+            <Nav user={user} setUser={setUser} />
         </div>
     );
 }
