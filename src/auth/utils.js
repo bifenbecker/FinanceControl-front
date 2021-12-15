@@ -7,18 +7,28 @@ const SERVICE_NAME = 'auth';
 
 const BASE_URL = 'http://localhost:10000/auth/'
 
-
-function logout(){
+function clear_tokens(){
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+}
+
+function logout(){
+    clear_tokens();
     window.location.reload();
 }
+
 
 export async function checkToken(func) {
     return async function(...args){
         let access_token = localStorage.getItem('access_token');
+        let decoded_jwt;
+        try {
+            decoded_jwt = jwt_decode(access_token);
+        } catch (error) {
+            clear_tokens();
+            access_token = localStorage.getItem('access_token');
+        }
         if(access_token !== null){
-            let decoded_jwt = jwt_decode(access_token);
             let now = Math.floor(new Date().getTime()/1000);
 
             if(decoded_jwt.exp < now){
@@ -30,33 +40,47 @@ export async function checkToken(func) {
                     body: JSON.stringify({
                         refresh_token: localStorage.getItem('refresh_token')
                     })
+                }).then(async () => {
+                    console.log("SUCCESS")
+                    if(response.status === 200){
+                        const content = await response.json();
+                        localStorage.setItem("access_token", content['access_token']);
+                        localStorage.setItem("refresh_token", content['refresh_token']);
+                        const res = await func(...args);
+                        return res;
+                    }else{
+                        logout();
+                    }
+                }).catch((error) => {
+                    throw new Error("Failed refresh token")
                 })
-                if(response.status === 200){
-                    const content = await response.json();
-                    localStorage.setItem("access_token", content['access_token']);
-                    localStorage.setItem("refresh_token", content['refresh_token']);
-
-                }else{
-                    logout();
-                }
             }
-            
         }
-
-        if(access_token !== null){
-            return func(...args);
-        }
+        
     }
+    
 }
 
 
-async function get_user_f(){
-    const response = await fetch(BASE_URL + 'api/user', {
+export async function get_user_f(){
+    
+    const response = await (fetch(BASE_URL + 'api/user', {
         headers: {"jwt-assertion": localStorage.getItem('access_token')},
-    });
-    return response;
+    })).then(() => {
+        return response;
+    }).catch((error) => {
+        throw new Error("Faild fetch 'get user'")
+    })
 }
-export let get_user = checkToken(get_user_f);
+export const get_user = async (...args) => {
+    const content = await checkToken(get_user_f);
+    
+    await content(...args).then((res) => {
+        return res;
+    }).catch((err) => {
+        console.error(err);
+    })
+}
 
 
 export async function login(body){

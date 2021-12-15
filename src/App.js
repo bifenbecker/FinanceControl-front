@@ -13,21 +13,11 @@ function App() {
     useEffect(() => {
           (
             async () => {
-              let request = await get_user;
-              let response = await request();
-              if(response !== undefined){
-                if(response.status === 200 || response.status === 423){
-                  const content = await response.json();
-                  setUser(content);
-                }
-                else if(response.status === 404 || response.status === 401){
-                  localStorage.removeItem('access_token');
-                  localStorage.removeItem('refresh_token');
-                  setUser(undefined);
-  
-                }
-              }
+              const content = await get_user();
               
+              if(content !== undefined){
+                  setUser(content);
+              }
             }
           )();
     }, [setUser]);

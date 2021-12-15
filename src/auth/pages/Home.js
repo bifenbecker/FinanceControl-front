@@ -82,7 +82,9 @@ const UserInfo = (props) => {
     }
 
     return (
+        <div>
         {props.user && list? list: null}
+        </div>
     );
 }
 
