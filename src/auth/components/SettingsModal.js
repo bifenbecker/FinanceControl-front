@@ -74,7 +74,7 @@ const SettingsModal = (props) => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={currency}
-                    defaultValue={props.user.settings.currency.name}
+                    defaultValue={props.user?props.user.settings.currency.name:null}
                     label="Currency"
                     onChange={handleChange}
                 >
