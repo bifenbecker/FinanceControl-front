@@ -64,12 +64,14 @@ const ChooseBillModal = (props) => {
     
     const add_bill = async (e) => {
         if(name !== ""){
-            const response = await create_bill({
+            const content = await create_bill({
                 name,
                 balance
-            })
-            const content = await response.json();
-            props.billList.push(content);
+            }, {is_content: true})
+            if(content !== undefined){
+                props.billList.push(content);
+            }
+            
         }
         setIsClickedCreateBill(false);
     }
@@ -115,7 +117,7 @@ const ChooseBillModal = (props) => {
                         </Box>
                     </Box>
                     : 
-                    <Fab sx={{ color: 'success.dark', bgcolor: '#B9C4C9', mr: 3}} aria-label="add" onClick={setIsClickedCreateBill(!isClickedCreateBill)}>
+                    <Fab sx={{ color: 'success.dark', bgcolor: '#B9C4C9', mr: 3}} aria-label="add" onClick={e => setIsClickedCreateBill(!isClickedCreateBill)}>
                         <AddIcon />
                     </Fab>
                 }

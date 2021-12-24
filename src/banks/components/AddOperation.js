@@ -35,8 +35,8 @@ export default function AddOperation(props) {
     
     const submit = async () => {
         if(bill !== undefined) {
-            const request = await add_operation;
-            const response = await request({
+
+            const response = await add_operation({
                 category: category.id,
                 description,
                 value,
@@ -65,20 +65,14 @@ export default function AddOperation(props) {
             async () => {
                 if(localStorage.getItem('access_token') !== null){
                     if(categoryList === undefined && billList === undefined && isSendRequest === false){
-                        const request_category_list = await category_list;
-                        const request_bill_list = await bill_list;
-                        const [response_category_list, response_bill_list] = await Promise.all([request_category_list, request_bill_list])
-                        if(response_category_list !== undefined){
-                            if(response_category_list.status === 200){
-                                const content = await response_category_list.json();
-                                setCategoryList(content.map((category) => category));
-                            }
+
+                        const [content_category_list, content_bill_list] = await Promise.all([category_list({is_content: true}), bill_list({is_content: true})])
+                        
+                        if(content_category_list !== undefined){
+                            setCategoryList(content_category_list.map((category) => category));
                         }
-                        if(response_bill_list !== undefined){
-                            if(response_bill_list.status === 200){
-                                const content = await response_bill_list.json();
-                                setBillList(content.map((bill) => bill));
-                            }
+                        if(content_bill_list !== undefined){
+                            setBillList(content_bill_list.map((bill) => bill));
                         }
                         setIsSendRequest(true);
                     }
@@ -111,12 +105,10 @@ export default function AddOperation(props) {
                                     value={category !== undefined && category.isIncome === isIncome? category.name + " - Category" : null}
                                     defaultValue="Category"
                                     variant="standard"
-                                    // onChange={e => setCategory(e.target.value)}
                                     onClick={e => {setChooseCategoryModal(true)}}
                                 />
                                 <ChooseCategoryModal openModal={openChooseCategoryModal} setOpen={setChooseCategoryModal} categoryList={categoryList} setCategory={setCategory} isIncome={isIncome}/>
                             </div>
-                            {/* //TODO: Change on select */}
                             <div className="m-5">
                                 <TextField
                                     id="standard-required"
@@ -128,7 +120,6 @@ export default function AddOperation(props) {
                                 />
                                 <ChooseBillModal settings={props.settings} openModal={openChooseBillModal} setOpen={setChooseBillModal} billList={billList} setBill={setBill}/>
                             </div>
-                            {/* //TODO: Change on date */}
                             <div className="m-5">
                             <TextField
                                 id="date"
@@ -168,7 +159,6 @@ export default function AddOperation(props) {
         <TabContext value={navValue}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
-                {/* icon={} */}
                     <Tab label="PAYMENT" value="1" onClick={e => {
                         setIsIncome(false);
                         }}/> 

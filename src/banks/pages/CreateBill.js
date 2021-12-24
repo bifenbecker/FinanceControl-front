@@ -41,20 +41,12 @@ const CreateBill = (props) => {
 
     const submit = async () => {
         if(validate(name, balance)){
-            const request = await create_bill;
-            const response = await request({
+            const content = await create_bill({
                 name,
                 balance
-            })
-            if(response !== undefined){
-                
-                if(response.status === 200 || response.status === 202){
-                    setError('');
-                }
-                else{
-                    const content = await response.json();
-                    setError(content['msg']);
-                }
+            }, {is_content: true})
+            if(content === undefined){
+                setError('No success');
             }
             props.setOpen(false);
         }

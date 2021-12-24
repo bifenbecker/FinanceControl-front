@@ -29,17 +29,13 @@ const SettingsModal = (props) => {
 
     const handleChange = async (event) => {
         setCurrency(event.target.value);
-        const request = await update_settings;
-        const response = await request({
+        const content = await update_settings({
             currency: event.target.value
-        })
-        if(response !== undefined){
-            const content = await response.json();
-            if(response.status === 200){
-                props.user.settings.currency = content.currency;
-                localStorage.setItem('access_token', content.access_token);
-                localStorage.setItem('refresh_token', content.refresh_token);
-            }
+        }, {is_content:true})
+        if(content !== undefined){
+            props.user.settings.currency = content.currency;
+            localStorage.setItem('access_token', content.access_token);
+            localStorage.setItem('refresh_token', content.refresh_token);
         }
         
         

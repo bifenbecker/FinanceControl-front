@@ -136,13 +136,11 @@ const BillView = (props) => {
 
     const editBill = async () => {
         if(newName !== undefined && newBalance !== undefined) {
-            const request = await edit_bill;
-            const response = await request({
+            const content = await edit_bill({
                 name: newName,
                 balance: newBalance
-            })
-            if(response !== undefined){
-                const content = await response.json();
+            }, {is_content: true})
+            if(content !== undefined){
                 props.setActiveBill(content);
             }
             

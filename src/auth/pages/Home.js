@@ -108,9 +108,9 @@ const Home = (props) => {
             if(email !== props.user.email && email !== ''){
                 new_data['email'] = email;
             }
-            if(Object.keys(new_data).length === 0 && localStorage.getItem('access_token') !== undefined){
-                const request = edit_user;
-                let response = await request(new_data);
+            console.log(Object.keys(new_data).length);
+            if(Object.keys(new_data).length !== 0 && localStorage.getItem('access_token') !== undefined){
+                let response = await edit_user(new_data);
                 if(response !== undefined){
                     if(response.status === 401){
                         props.setUser(undefined);
@@ -143,8 +143,7 @@ const Home = (props) => {
         if(props.user !== undefined){
             let isDelete = window.confirm('delete');
             if(isDelete === true){
-                const request = delete_user;
-                let response = await request();
+                await delete_user();
                 window.location.reload();
             }
         }
