@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+import TextField from '@mui/material/TextField';
 import { ThemeProvider } from '@mui/system';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
@@ -8,6 +14,8 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DownloadIcon from '@mui/icons-material/Download';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import Zoom from '@mui/material/Zoom';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@mui/material/AppBar';
@@ -28,8 +36,10 @@ import EditBill from '../components/EditBill';
 import AddOperationModal from '../components/AddOperationModal';
 
 import { operations_of_bill, edit_bill, convertValue } from '../utils';
+import { get_currencies } from '../../auth/utils';
 import ListOperations from '../components/ListOperations';
 import StatisticOfOperations from '../components/StatisticOfOperations';
+import NumberFormatCustom from '../components/NumberFormatInput';
 
 
 
@@ -104,11 +114,15 @@ const BillView = (props) => {
     const [operations, setOperations] = useState();
     const [incomeValue, setIncomeValue] = useState();
     const [paymentValue, setPaymentValue] = useState();
+    const [currencyList, setCurrencyList] = useState();
     useEffect(() => {
         (
             async () => {
-                const request = await operations_of_bill;
-                const response = await request(props.bill.uuid);
+                
+                
+                const [response, response_curr] = await Promise.all([operations_of_bill(props.bill.uuid), await get_currencies()])
+                const content_curr = await response_curr.json();
+                setCurrencyList(content_curr.map((cur) => ({name: cur.name, char: cur.char})))
                 if(response !== undefined){
                     const content = await response.json();
                     setOperations(content.map((operation) => {
@@ -191,10 +205,32 @@ const BillView = (props) => {
         }
     ];
 
+    
+
     var convertedCurrentBalance = convertValue(props.bill.currency, props.settings.currency.name, props.bill.balance);
     var convertedStartBalance = convertValue(props.bill.currency, props.settings.currency.name, props.bill.start_balance);
     var stat = ((convertedCurrentBalance - convertedStartBalance)/100).toFixed(2);
     var currencyChar = props.settings.currency.char;
+
+    const[isIncomeFilter, setIsIncomeFilter] = useState(true);
+    const[currenciesListFilter, setCurrenciesListFilter] = useState([]);
+    const[valueFilter, setValueFilter] = useState({value: 0.0, icc: true});
+    const[isClickValueFilter, setIsClickValueFilter] = useState(false);
+
+    const showValueFilter = () => {
+        setIsClickValueFilter(!isClickValueFilter);
+    }
+
+    const handleFormat = (event, newFormats) => {
+        setCurrenciesListFilter(newFormats);
+        filter_operations();
+    };
+
+    const filter_operations = () => {
+        console.log(isIncomeFilter)
+        console.log(currenciesListFilter)
+        console.log(valueFilter)
+    }
 
     return (
         <div>
@@ -208,7 +244,7 @@ const BillView = (props) => {
                         p: 1
                     }}
                 >
-                    <Box sx={{ color: 'text.secondary', fontSize: 25, fontWeight: 'medium' }}>
+                    <Box sx={{ color: 'text.secondary', fontSize: 25, fontWeight: 650 }}>
                         {props.bill.name}
                     </Box>
                     <Box sx={{ color: 'text.primary', fontSize: 22 }}>
@@ -283,6 +319,104 @@ const BillView = (props) => {
                         <TabPanel
                             value={value} index={0} dir={theme.direction}
                         >
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column', //column
+                                    alignItems: 'center',
+                                    '& > *': {
+                                    m: 1,
+                                    },
+                                }}
+                                >
+                                <ButtonGroup size="small" aria-label="small button group">
+                                    <Button color={isIncomeFilter?"success": "primary"} onClick={e => {
+                                        setIsIncomeFilter(true)
+                                        filter_operations();
+                                    }}>Income</Button>
+                                    <Button color={isIncomeFilter?"primary": "success"} onClick={e => {
+                                        setIsIncomeFilter(false)
+                                        filter_operations();
+                                    }}>Payment</Button>
+                                </ButtonGroup>
+                                {
+                                    currencyList?
+                                    <ToggleButtonGroup
+                                        value={currenciesListFilter}
+                                        onChange={handleFormat}
+                                        aria-label="text formatting"
+                                    >
+                                        {currencyList.map((currency, index) => {
+                                            return <ToggleButton value={currency.name}>{currency.name}</ToggleButton >
+                                        })}
+                                    </ToggleButtonGroup>
+                                    : null
+                                }
+                                {
+                                    isClickValueFilter?
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column', //column
+                                            alignItems: 'center',
+                                            '& > *': {
+                                            m: 1,
+                                            },
+                                        }}
+                                    >
+                                            <Button color="success" variant="outlined" onClick={showValueFilter}>Value</Button>
+                                            <TextField
+                                                label={isIncomeFilter? `+${valueFilter?valueFilter.value:null}`: `-${valueFilter?valueFilter.value:null}`}
+                                                onChange={e => {
+                                                    setValueFilter({value: e.target.value, icc: valueFilter.icc});
+                                                    filter_operations();
+                                                }}
+                                                id="formatted-numberformat-input"
+                                                InputProps={{
+                                                    inputComponent: NumberFormatCustom
+                                                }}
+                                                variant="standard"
+                                            />
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row', //column
+                                                    alignItems: 'center',
+                                                    '& > *': {
+                                                    m: 1,
+                                                    },
+                                                }}
+                                            >
+                                                <IconButton color={valueFilter.icc? "primary" : "success"} size="large" onClick={e => {
+                                                    setValueFilter({value: valueFilter.value, icc: false})
+                                                    filter_operations();
+                                                }}>
+                                                    <ArrowCircleDownIcon fontSize="inherit" />
+                                                </IconButton>
+                                                <IconButton color={valueFilter.icc? "success" : "primary"} size="large" onClick={e => {
+                                                    setValueFilter({value: valueFilter.value, icc: true})
+                                                    filter_operations();
+                                                }}>
+                                                    <ArrowCircleUpIcon fontSize="inherit" />
+                                                </IconButton>
+                                            </Box>
+                                    </Box>
+                                    : 
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'row', //column
+                                            alignItems: 'center',
+                                            '& > *': {
+                                            m: 1,
+                                            },
+                                        }}
+                                        >
+                                            <Button color="primary" variant="outlined" onClick={showValueFilter}>Value</Button>
+                                    </Box>
+                                }
+                                
+                            </Box>
                             <ListOperations user={props.user} operations={operations} />
                         </TabPanel>
                         <TabPanel

@@ -141,7 +141,7 @@ const Home = (props) => {
 
     const deleteUser = async () => {
         if(props.user !== undefined){
-            let isDelete = window.confirm('delete');
+            let isDelete = window.confirm('Delete me?');
             if(isDelete === true){
                 await delete_user();
                 window.location.reload();

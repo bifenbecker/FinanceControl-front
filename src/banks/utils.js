@@ -191,3 +191,20 @@ export async function my_operations(uuid, is_content=false) {
 }
 
 
+export async function delete_bill(uuid, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/bill`, {
+            method: 'DELETE',
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'uuid': uuid,
+            }
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'delete_bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, uuid).then(response => response).catch((error) => console.log(error))
+    return response;
+}
+
