@@ -34,7 +34,6 @@ const MyOperations = (props) => {
         <Box sx={{ width: 500 }}>
             <ListOperations operations={operations}/>
         </Box>
-        
     );
 }
 

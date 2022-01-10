@@ -134,8 +134,6 @@ const BillView = (props) => {
         }
     }
 
-    
-
     useEffect(() => {
         (
             async () => {
@@ -217,7 +215,7 @@ const BillView = (props) => {
     var stat = ((convertedCurrentBalance - convertedStartBalance)/100).toFixed(2);
     var currencyChar = props.settings.currency.char;
 
-    const[isIncomeFilter, setIsIncomeFilter] = useState(undefined);
+    const[isIncomeFilter, setIsIncomeFilter] = useState();
     const[currenciesListFilter, setCurrenciesListFilter] = useState([]);
     const[valueFilter, setValueFilter] = useState({value: 0.0, icc: true});
     const[isClickValueFilter, setIsClickValueFilter] = useState(false);
