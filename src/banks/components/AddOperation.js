@@ -35,7 +35,7 @@ export default function AddOperation(props) {
     
     const submit = async () => {
         if(bill !== undefined) {
-
+            
             const response = await add_operation({
                 category: category.id,
                 description,
@@ -154,6 +154,7 @@ export default function AddOperation(props) {
 
                         </Box>
                     </form>
+    
 
     return (
         <TabContext value={navValue}>

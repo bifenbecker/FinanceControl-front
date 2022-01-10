@@ -208,3 +208,21 @@ export async function delete_bill(uuid, is_content=false) {
     return response;
 }
 
+
+export async function filter_operations(data, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/filter-operations`, {
+            method: 'POST',
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'delete_bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, data).then(response => response).catch((error) => console.log(error))
+    return response;
+}

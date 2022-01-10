@@ -32,15 +32,15 @@ const ChooseCategoryModal = ({openModal, setOpen, categoryList, setCategory, isI
     const add_category = async (e) => {
         
         if(categoryNameCreate !== ""){
+            console.log(isIncome)
             var name = categoryNameCreate;
-            var isIncome = isIncome;
             var body = {
                 name: name,
                 isIncome: isIncome
             }
 
             const content = await create_category(body, {is_content: true});
-            if(content !== undefined){
+            if(content !== undefined && categoryList !== undefined){
                 categoryList.push(content);
             }
         }

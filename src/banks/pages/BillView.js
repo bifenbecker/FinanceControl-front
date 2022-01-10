@@ -35,7 +35,7 @@ import TableRow from '@mui/material/TableRow';
 import EditBill from '../components/EditBill';
 import AddOperationModal from '../components/AddOperationModal';
 
-import { operations_of_bill, edit_bill, convertValue } from '../utils';
+import { operations_of_bill, edit_bill, convertValue, filter_operations } from '../utils';
 import { get_currencies } from '../../auth/utils';
 import ListOperations from '../components/ListOperations';
 import StatisticOfOperations from '../components/StatisticOfOperations';
@@ -115,6 +115,27 @@ const BillView = (props) => {
     const [incomeValue, setIncomeValue] = useState();
     const [paymentValue, setPaymentValue] = useState();
     const [currencyList, setCurrencyList] = useState();
+
+    const process_operations = (operations) => {
+        setOperations(operations.map((operation) => {
+            var convertedValue = convertValue(operation.currency, props.settings.currency.name, operation.value);
+            var currencyChar = props.settings.currency.char;
+            operation.convertedValue = convertedValue;
+            operation.char =  currencyChar
+            return operation;
+        }))
+        let income_operations = operations.filter((value) => value.isIncome === true);
+        let payment_operations = operations.filter((value) => value.isIncome === false);
+        if(income_operations.length > 0){
+            setIncomeValue(income_operations.map((operation) => Number(operation.convertedValue)).reduce((acc, value) => acc + value));
+        }
+        if(payment_operations.length > 0){
+            setPaymentValue(payment_operations.map((operation) => Number(operation.convertedValue)).reduce((acc, value) => acc + value));
+        }
+    }
+
+    
+
     useEffect(() => {
         (
             async () => {
@@ -125,25 +146,9 @@ const BillView = (props) => {
                 setCurrencyList(content_curr.map((cur) => ({name: cur.name, char: cur.char})))
                 if(response !== undefined){
                     const content = await response.json();
-                    setOperations(content.map((operation) => {
-                        var convertedValue = convertValue(operation.currency, props.settings.currency.name, operation.value);
-                        var currencyChar = props.settings.currency.char;
-                        operation.convertedValue = convertedValue;
-                        operation.char =  currencyChar
-                        return operation;
-                    }))
-                    let income_operations = content.filter((value) => value.isIncome === true);
-                    let payment_operations = content.filter((value) => value.isIncome === false);
-                    if(income_operations.length > 0){
-                        setIncomeValue(income_operations.map((operation) => Number(operation.convertedValue)).reduce((acc, value) => acc + value));
-                    }
-                    if(payment_operations.length > 0){
-                        setPaymentValue(payment_operations.map((operation) => Number(operation.convertedValue)).reduce((acc, value) => acc + value));
-                    }
-                    
-                    
+                    process_operations(content);
                 }
-                }
+            }
         )();
     }, []);
     
@@ -212,7 +217,7 @@ const BillView = (props) => {
     var stat = ((convertedCurrentBalance - convertedStartBalance)/100).toFixed(2);
     var currencyChar = props.settings.currency.char;
 
-    const[isIncomeFilter, setIsIncomeFilter] = useState(true);
+    const[isIncomeFilter, setIsIncomeFilter] = useState(undefined);
     const[currenciesListFilter, setCurrenciesListFilter] = useState([]);
     const[valueFilter, setValueFilter] = useState({value: 0.0, icc: true});
     const[isClickValueFilter, setIsClickValueFilter] = useState(false);
@@ -223,13 +228,35 @@ const BillView = (props) => {
 
     const handleFormat = (event, newFormats) => {
         setCurrenciesListFilter(newFormats);
-        filter_operations();
     };
 
-    const filter_operations = () => {
-        console.log(isIncomeFilter)
-        console.log(currenciesListFilter)
-        console.log(valueFilter)
+    useEffect(() => {
+        (
+            async () => {
+                if(isIncomeFilter !== undefined){
+                    const send_data = {
+                        isIncome: isIncomeFilter,
+                        currencies: currenciesListFilter
+                    };
+                    if(isClickValueFilter === true){
+                        send_data.value = valueFilter
+                    }
+                    const response = await filter_operations(send_data, {is_content: true})
+                    process_operations(response);
+                }
+                
+            }
+        )();
+    }, [isIncomeFilter, currenciesListFilter, valueFilter]);
+
+
+    const clear_filters = async () => {
+        setIsIncomeFilter(undefined);
+        setCurrenciesListFilter([]);
+        setValueFilter({value: 0.0, icc: true});
+        setIsClickValueFilter(false);
+        const response = await operations_of_bill(props.bill.uuid, {is_content: true});
+        process_operations(response);
     }
 
     return (
@@ -330,13 +357,11 @@ const BillView = (props) => {
                                 }}
                                 >
                                 <ButtonGroup size="small" aria-label="small button group">
-                                    <Button color={isIncomeFilter?"success": "primary"} onClick={e => {
+                                    <Button color={isIncomeFilter !== undefined? isIncomeFilter === true?"success": "primary": "primary"} onClick={e => {
                                         setIsIncomeFilter(true)
-                                        filter_operations();
                                     }}>Income</Button>
-                                    <Button color={isIncomeFilter?"primary": "success"} onClick={e => {
+                                    <Button color={isIncomeFilter !== undefined? isIncomeFilter === true?"primary": "success": "primary"} onClick={e => {
                                         setIsIncomeFilter(false)
-                                        filter_operations();
                                     }}>Payment</Button>
                                 </ButtonGroup>
                                 {
@@ -368,8 +393,7 @@ const BillView = (props) => {
                                             <TextField
                                                 label={isIncomeFilter? `+${valueFilter?valueFilter.value:null}`: `-${valueFilter?valueFilter.value:null}`}
                                                 onChange={e => {
-                                                    setValueFilter({value: e.target.value, icc: valueFilter.icc});
-                                                    filter_operations();
+                                                    setValueFilter({value: e.target.value, icc: valueFilter.icc})
                                                 }}
                                                 id="formatted-numberformat-input"
                                                 InputProps={{
@@ -389,13 +413,11 @@ const BillView = (props) => {
                                             >
                                                 <IconButton color={valueFilter.icc? "primary" : "success"} size="large" onClick={e => {
                                                     setValueFilter({value: valueFilter.value, icc: false})
-                                                    filter_operations();
                                                 }}>
                                                     <ArrowCircleDownIcon fontSize="inherit" />
                                                 </IconButton>
                                                 <IconButton color={valueFilter.icc? "success" : "primary"} size="large" onClick={e => {
                                                     setValueFilter({value: valueFilter.value, icc: true})
-                                                    filter_operations();
                                                 }}>
                                                     <ArrowCircleUpIcon fontSize="inherit" />
                                                 </IconButton>
@@ -415,6 +437,18 @@ const BillView = (props) => {
                                             <Button color="primary" variant="outlined" onClick={showValueFilter}>Value</Button>
                                     </Box>
                                 }
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row', //column
+                                        alignItems: 'center',
+                                        '& > *': {
+                                        m: 1,
+                                        },
+                                    }}
+                                    >
+                                            <Button color="primary" variant="outlined" onClick={clear_filters}>Clear</Button>
+                                    </Box>
                                 
                             </Box>
                             <ListOperations user={props.user} operations={operations} />
