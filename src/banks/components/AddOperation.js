@@ -13,7 +13,7 @@ import ChooseCategoryModal from './ChooseCategoryModal';
 import ChooseBillModal from './ChooseBillModal';
 import NumberFormatCustom from './NumberFormatInput';
 
-import {category_list, bill_list, add_operation} from '../utils'
+import {category_list, bill_list, add_operation, transfer_bill, convertValue} from '../utils'
 
 
 export default function AddOperation(props) {
@@ -28,8 +28,14 @@ export default function AddOperation(props) {
     const [description, setDescription] = useState('');
     const [error, setError] = useState();
 
+    const [transferValue, setTransferValue] = useState(0.0);
+    const [transferBillFrom, setTransferBillFrom] = useState();
+    const [transferBillTo, setTransferBillTo] = useState();
+
     const [openChooseCategoryModal, setChooseCategoryModal] = React.useState(false);
     const [openChooseBillModal, setChooseBillModal] = React.useState(false);
+    const [openChooseBillFromModal, setChooseBillFromModal] = React.useState(false);
+    const [openChooseBillToModal, setChooseBillToModal] = React.useState(false);
 
     const [isSendRequest, setIsSendRequest] = useState(false);
     
@@ -56,6 +62,30 @@ export default function AddOperation(props) {
         }
         
     }
+
+    const transfer = async () => {
+        if(transferBillFrom !== undefined && transferBillTo !== undefined) {
+            
+            const response = await transfer_bill({
+                from_bill: transferBillFrom.uuid,
+                to_bill: transferBillTo.uuid,
+                value: transferValue
+            });
+            if(response !== undefined){
+                props.handleClose();
+                setError(undefined);
+            }
+            else{
+                setError('No success of adding operation');
+            }
+            
+        }
+        else{
+            setError('Choose bill');
+        }
+        
+    }
+
     const handleChange = (event, newValue) => {
         setNavValue(newValue);
     };
@@ -154,6 +184,60 @@ export default function AddOperation(props) {
 
                         </Box>
                     </form>
+
+    const transferForm = <form>
+                        <Box sx={{ '& button': { m: 1 } }}>
+                            <h1 className="h3 m-5 mt-0 fw-normal">Transfer</h1>
+                            <div className="m-5">
+                                <TextField
+                                    label='Value'
+                                    defaultValue={value}
+                                    onChange={e => setTransferValue(e.target.value)}
+                                    name={props.settings? props.settings.currency.char : null}
+                                    id="formatted-numberformat-input"
+                                    InputProps={{
+                                        inputComponent: NumberFormatCustom
+                                    }}
+                                    variant="standard"
+                                    color={isIncome? "success":"warning"}
+                                />
+                            </div>
+                            
+                            <div className="m-5">
+                                <TextField
+                                    id="standard-required"
+                                    label={transferBillFrom !== undefined ? null : "Bill from"}
+                                    value={transferBillFrom !== undefined ? transferBillFrom.name + " - Bill from" : null}
+                                    defaultValue="Bill"
+                                    variant="standard"
+                                    onClick={e => {setChooseBillFromModal(true)}}
+                                />
+                                <ChooseBillModal settings={props.settings} openModal={openChooseBillFromModal} setOpen={setChooseBillFromModal} billList={billList} setBill={setTransferBillFrom}/>
+                            </div>
+                            
+                            <div className="m-5">
+                                <TextField
+                                    id="standard-required1"
+                                    label={transferBillTo !== undefined ? null : "Bill to"}
+                                    value={transferBillTo !== undefined ? transferBillTo.name + " - Bill to" : null}
+                                    defaultValue="Bill"
+                                    variant="standard"
+                                    onClick={e => {setChooseBillToModal(true)}}
+                                />
+                                <ChooseBillModal settings={props.settings} openModal={openChooseBillToModal} setOpen={setChooseBillToModal} billList={billList} setBill={setTransferBillTo}/>
+                            </div>
+
+                            <div className="row">
+                                <div className="col text-center">
+                                <Button variant="outlined" onClick={transfer}>TRANSFER</Button>
+                                <p className="mt-5">
+                                    {error !== undefined? error: null}
+                                </p>
+                                </div>
+                            </div>
+
+                        </Box>
+                    </form>
     
 
     return (
@@ -171,7 +255,7 @@ export default function AddOperation(props) {
             </Box>
             <TabPanel value="1">{AddForm}</TabPanel>
             <TabPanel value="2">{AddForm}</TabPanel>
-            <TabPanel value="3">TRANSFER</TabPanel>
+            <TabPanel value="3">{transferForm}</TabPanel>
         </TabContext>
         
     );

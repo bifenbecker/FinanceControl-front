@@ -16,10 +16,12 @@ const BillList = (props) => {
     };
     let list;
 
-    
     if(props.billList[0] !== undefined) {    
         list = props.billList.map((bill) => {
-            // let convertedBalance = convertValue(props.bill.currency, props.settings.currency.name, props.bill.balance) + props.settings.currency.char;
+            let convertedBalance = undefined;
+            if(props.settings.currency !== undefined) {
+                convertedBalance = convertValue(bill.currency, props.settings.currency.name, bill.balance) + props.settings.currency.char;
+            }
             return (
                 <ListItemButton
                 onClick={(event) => handleListItemClick(event, bill)}
@@ -40,7 +42,7 @@ const BillList = (props) => {
                             ml: 3
                         }}
                         primary={bill.name} 
-                        secondary={"Current balance: " + bill.balance}
+                        secondary={"Current balance: " + convertedBalance? convertedBalance : bill.balance}
                     />
                 </ListItemButton>
             

@@ -126,9 +126,11 @@ const BillView = (props) => {
         }))
         let income_operations = operations.filter((value) => value.isIncome === true);
         let payment_operations = operations.filter((value) => value.isIncome === false);
+
         if(income_operations.length > 0){
             setIncomeValue(income_operations.map((operation) => Number(operation.convertedValue)).reduce((acc, value) => acc + value));
         }
+
         if(payment_operations.length > 0){
             setPaymentValue(payment_operations.map((operation) => Number(operation.convertedValue)).reduce((acc, value) => acc + value));
         }
@@ -231,7 +233,7 @@ const BillView = (props) => {
     useEffect(() => {
         (
             async () => {
-                if(isIncomeFilter !== undefined){
+                if(isIncomeFilter !== undefined && operations !== undefined){
                     const send_data = {
                         isIncome: isIncomeFilter,
                         currencies: currenciesListFilter
@@ -449,7 +451,12 @@ const BillView = (props) => {
                                     </Box>
                                 
                             </Box>
-                            <ListOperations user={props.user} operations={operations} />
+                            {
+                                operations?
+                                <ListOperations user={props.user} operations={operations} />
+                                : <p>Loading...</p>
+                            }
+                            
                         </TabPanel>
                         <TabPanel
                             value={value} index={1} dir={theme.direction}

@@ -25,6 +25,9 @@ export default function SearchView({searchRequest, settings}) {
     }, []);
 
 
+    if(searchResult === undefined) {
+        return <p>Loading...</p>
+    }
     return (
         <Box sx={{ width: 500 }}>
             <ListOperations operations={searchResult}/>

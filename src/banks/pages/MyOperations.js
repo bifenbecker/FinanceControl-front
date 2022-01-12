@@ -30,6 +30,9 @@ const MyOperations = (props) => {
         )();
     }, []);
     
+    if(operations === undefined) {
+        return <p>Loading...</p>
+    }
     return (
         <Box sx={{ width: 500 }}>
             <ListOperations operations={operations}/>
