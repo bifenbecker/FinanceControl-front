@@ -69,7 +69,7 @@ export default function AddOperation(props) {
             const response = await transfer_bill({
                 from_bill: transferBillFrom.uuid,
                 to_bill: transferBillTo.uuid,
-                value: transferValue
+                value: parseFloat(transferValue)
             });
             if(response !== undefined){
                 props.handleClose();

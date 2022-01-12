@@ -12,13 +12,16 @@ export default function SearchView({searchRequest, settings}) {
         (
           async () => {
             const content = await search_request({text: searchRequest}, {is_content: true});
-            setSearchResult(content.map((operation) => {
-                var convertedValue = convertValue(operation.currency, settings.currency.name, operation.value);
-                var currencyChar = settings.currency.char;
-                operation['convertedValue'] = convertedValue;
-                operation['char'] =  currencyChar
-                return operation;
-            }));
+            if(content !== undefined && content.length > 0) {
+                setSearchResult(content.map((operation) => {
+                    var convertedValue = convertValue(operation.currency, settings.currency.name, operation.value);
+                    var currencyChar = settings.currency.char;
+                    operation['convertedValue'] = convertedValue;
+                    operation['char'] =  currencyChar
+                    return operation;
+                }));
+            }
+            
           }
         )();
     

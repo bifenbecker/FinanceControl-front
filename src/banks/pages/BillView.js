@@ -236,7 +236,8 @@ const BillView = (props) => {
                 if(isIncomeFilter !== undefined && operations !== undefined){
                     const send_data = {
                         isIncome: isIncomeFilter,
-                        currencies: currenciesListFilter
+                        currencies: currenciesListFilter,
+                        bills: [props.bill.uuid]
                     };
                     if(isClickValueFilter === true){
                         send_data.value = valueFilter
