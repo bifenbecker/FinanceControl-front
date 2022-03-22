@@ -5,6 +5,9 @@ import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemButton from '@mui/material/ListItemButton';
 
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+
 import Grid from '@mui/material/Grid';
 
 import { bill_list, convertValue } from '../utils';
@@ -59,6 +62,12 @@ const BillPrev = (props) => {
                         primary={props.bill.name} 
                         secondary={convertValue(props.bill.currency, props.settings.currency.name, props.bill.balance) + props.settings.currency.char}
                     />
+                    {
+                        props.bill.balance <= props.bill.start_balance?
+                        <ArrowDownwardIcon />
+                        : 
+                        <ArrowUpwardIcon />
+                    }
                 </ListItemButton>
             </Grid>
             <Grid item xs={5}>
@@ -71,25 +80,24 @@ const BillPrev = (props) => {
 
 
 const ListBills = (props) => {
-    const [billList, setBillList] = useState(undefined);
+    const [billList, setBillList] = useState();
 
     useEffect(() => {
         (
             async () => {
-                const request = await bill_list;
-                const response = await request();
-                if(response !== undefined){
-                    const content = await response.json();
-                    if(response.status === 401){
-                        window.location.reload();
-                    }
-                    else if(response.status === 200){
-                        setBillList(content.map((bill) => <BillPrev settings={props.settings} bill={bill} setValue={props.setValue} setActiveBill={props.setActiveBill}/>));
-                    } 
+
+                const content = await bill_list({is_content: true});
+
+                if(content !== undefined && content.length > 0) {
+                    setBillList(content.map((bill) => <BillPrev settings={props.settings} bill={bill} setValue={props.setValue} setActiveBill={props.setActiveBill}/>));
                 }
             }
         )();
     }, []);
+
+    if(billList === undefined) {
+        return <p>Loading...</p>
+    }
 
     return (
         <div>

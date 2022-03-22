@@ -21,11 +21,14 @@ import BillsMenu from '../../banks/components/BillsMenu';
 import OperationsMenu from '../../banks/components/OperationsMenu';
 import BillView from '../../banks/pages/BillView';
 import MyOperations from '../../banks/pages/MyOperations';
+import SearchInput from './SearchInput';
+import SearchView from '../../banks/pages/SearchView';
 
 
 const Nav = (props) => {
     const [value, setNavValue] = useState('1');
-    const [activeBill, setActiveBill] = useState(undefined);
+    const [activeBill, setActiveBill] = useState();
+    const [searchRequest, setSearchRequest] = useState();
 
     const logout = () => {
         localStorage.removeItem('access_token');
@@ -45,8 +48,9 @@ const Nav = (props) => {
         tablist = <TabList onChange={handleChange} aria-label="lab API tabs example">
         <ProfileMenu logout={logout} user={props.user} setUser={props.setUser} />
         <Tab icon={<HomeIcon />} label="HOME" value="1" />
-        <BillsMenu settings={props.user?props.user.settings: undefined} setNavValue={setNavValue}/>
-        <OperationsMenu settings={props.user?props.user.settings: undefined} setNavValue={setNavValue}/>
+        <BillsMenu settings={props.user?.settings} setNavValue={setNavValue}/>
+        <OperationsMenu settings={props.user?.settings} setNavValue={setNavValue}/>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}><SearchInput setNavValue={setNavValue} setSearchRequest={setSearchRequest}/></Box>
     </TabList>
     }
     else{
@@ -64,9 +68,10 @@ const Nav = (props) => {
             <TabPanel value="1">Home</TabPanel>
             <TabPanel value="2"><Login setNavValue={setNavValue} setUser={props.setUser}/></TabPanel>
             <TabPanel value="3"><Register setNavValue={setNavValue}/></TabPanel>
-            <TabPanel value="4"><ListBills settings={props.user?props.user.settings: undefined} setValue={setNavValue} setActiveBill={setActiveBill}/></TabPanel>
-            <TabPanel value="5"><BillView settings={props.user?props.user.settings: undefined} bill={activeBill} setNavValue={setNavValue} setActiveBill={setActiveBill}/></TabPanel>
-            <TabPanel value="6"><MyOperations settings={props.user?props.user.settings: undefined}/></TabPanel>
+            <TabPanel value="4"><ListBills settings={props.user?.settings} setValue={setNavValue} setActiveBill={setActiveBill}/></TabPanel>
+            <TabPanel value="5"><BillView settings={props.user?.settings} bill={activeBill} setNavValue={setNavValue} setActiveBill={setActiveBill}/></TabPanel>
+            <TabPanel value="6"><MyOperations settings={props.user?.settings}/></TabPanel>
+            <TabPanel value="7"><SearchView settings={props.user?.settings} searchRequest={searchRequest}/></TabPanel>
         </TabContext>
     );
 };

@@ -7,7 +7,7 @@ import ListOperations from '../components/ListOperations';
 
 
 const MyOperations = (props) => {
-    const [operations, setOperations] = useState(undefined);
+    const [operations, setOperations] = useState();
 
     useEffect(() => {
         (
@@ -30,11 +30,13 @@ const MyOperations = (props) => {
         )();
     }, []);
     
+    if(operations === undefined) {
+        return <p>Loading...</p>
+    }
     return (
         <Box sx={{ width: 500 }}>
             <ListOperations operations={operations}/>
         </Box>
-        
     );
 }
 

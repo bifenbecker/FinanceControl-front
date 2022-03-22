@@ -45,8 +45,7 @@ const UserInfo = (props) => {
                     </div>
                 </Box>
     }
-    else if(props.isEdit === true){
-        
+    else{
         list = <form ref={props.formRef}>
                 <Box sx={{ '& button': { m: 1 } }}>
                     <div className="m-5">
@@ -84,7 +83,7 @@ const UserInfo = (props) => {
 
     return (
         <div>
-            {props.user? list: ''}
+        {props.user && list? list: null}
         </div>
     );
 }
@@ -109,9 +108,9 @@ const Home = (props) => {
             if(email !== props.user.email && email !== ''){
                 new_data['email'] = email;
             }
-            if(JSON.stringify(new_data) !== '{}' && localStorage.getItem('access_token') !== undefined){
-                const request = edit_user;
-                let response = await request(new_data);
+            console.log(Object.keys(new_data).length);
+            if(Object.keys(new_data).length !== 0 && localStorage.getItem('access_token') !== undefined){
+                let response = await edit_user(new_data);
                 if(response !== undefined){
                     if(response.status === 401){
                         props.setUser(undefined);
@@ -124,10 +123,7 @@ const Home = (props) => {
                     }
                 }
                 
-            }
-            else{
-                window.location.reload();
-            }       
+            }      
             setEditState(false);
         }
         else{
@@ -145,10 +141,9 @@ const Home = (props) => {
 
     const deleteUser = async () => {
         if(props.user !== undefined){
-            let isDelete = window.confirm('delete');
+            let isDelete = window.confirm('Delete me?');
             if(isDelete === true){
-                const request = delete_user;
-                let response = await request();
+                await delete_user();
                 window.location.reload();
             }
         }

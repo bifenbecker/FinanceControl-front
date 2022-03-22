@@ -20,8 +20,6 @@ const style = {
 
 const CreateBillModal = (props) => {
     return (
-        <div>
-
         <Modal
             open={props.openModal}
             onClose={props.handleClose}
@@ -32,7 +30,6 @@ const CreateBillModal = (props) => {
             <CreateBill settings={props.settings?props.settings: undefined} setOpen={props.setOpen}/>
             </Box>
         </Modal>
-        </div>
     );
 }
 

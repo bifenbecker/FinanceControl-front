@@ -17,18 +17,17 @@ const style = {
     p: 4,
 };
 
-const ProfileModal = (props) => {
+const ProfileModal = ({openModal, handleClose, user, setUser}) => {
     return (
         <div>
-
         <Modal
-            open={props.openModal}
-            onClose={props.handleClose}
+            open={openModal}
+            onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-            <Home user={props.user} setUser={props.setUser}/>
+            <Home user={user} setUser={setUser}/>
             </Box>
         </Modal>
         </div>

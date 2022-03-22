@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 
@@ -24,35 +24,29 @@ const style = {
 };
 
 const SettingsModal = (props) => {
-    const [currency, setCurrency] = React.useState(undefined);
-    const [currencyList, setCurrencyList] = React.useState(undefined);
+    const [currency, setCurrency] = useState();
+    const [currencyList, setCurrencyList] = useState();
 
     const handleChange = async (event) => {
         setCurrency(event.target.value);
-        const request = await update_settings;
-        const response = await request({
+        const content = await update_settings({
             currency: event.target.value
-        })
-        if(response !== undefined){
-            const content = await response.json();
-            if(response.status === 200){
-                props.user.settings.currency = content.currency;
-                localStorage.setItem('access_token', content.access_token);
-                localStorage.setItem('refresh_token', content.refresh_token);
-            }
+        }, {is_content:true})
+        if(content !== undefined){
+            props.user.settings.currency = content.currency;
+            localStorage.setItem('access_token', content.access_token);
+            localStorage.setItem('refresh_token', content.refresh_token);
         }
         
         
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         (
             async () => {
-                let response = await get_currencies();
-                let content = await response.json();
-                setCurrencyList(content.map((cur) => {
-                    return {name: cur.name, char: cur.char}
-                }))
+                const response = await get_currencies();
+                const content = await response.json();
+                setCurrencyList(content.map((cur) => ({name: cur.name, char: cur.char})))
                 
             }
         )();
@@ -79,11 +73,7 @@ const SettingsModal = (props) => {
                     onChange={handleChange}
                 >
                     {
-                        currencyList !== undefined?
-                        currencyList.map(currency => {
-                            return <MenuItem value={currency.name}>{currency.name + " - " + currency.char}</MenuItem>
-                        })
-                        : null
+                        !!currencyList && currencyList.map(currency => (<MenuItem value={currency.name}>{currency.name + " - " + currency.char}</MenuItem>))         
                     }
                 </Select>
             </FormControl>

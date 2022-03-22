@@ -1,12 +1,25 @@
 import React from 'react';
 
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 import TextField from '@mui/material/TextField';
 
 import NumberFormatCustom from './NumberFormatInput'
 
+import {delete_bill} from '../utils';
+
 
 export default function EditBill(props) {
+
+    const deleteBill = async () => {
+        let isDelete = window.confirm('Do you want to delete this bill?');
+            if(isDelete === true){
+                await delete_bill(props.bill.uuid);
+                window.location.reload();
+            }
+    }
+
     return (
         <form ref={props.formRef}>
             <Box sx={{ '& button': { m: 1 } }}>
@@ -33,7 +46,9 @@ export default function EditBill(props) {
                         variant="standard"
                     />
                 </div>
-
+                <Button variant="outlined" startIcon={<DeleteIcon />} color="error" onClick={deleteBill}>
+                    Delete
+                </Button>
             </Box>
         </form>
     );

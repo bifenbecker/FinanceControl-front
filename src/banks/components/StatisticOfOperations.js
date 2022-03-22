@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useMemo} from 'react';
 import Box from '@mui/material/Box';
 
 import TabContext from '@mui/lab/TabContext';
@@ -9,9 +9,6 @@ import Tab from '@mui/material/Tab';
 
 import ListOperations from './ListOperations';
 import StatTable from './Table';
-
-import { DataGrid,GridToolbarContainer,
-    GridToolbarExport } from '@mui/x-data-grid';
 
 
 function process_operations(operations, isIncome) {
@@ -44,33 +41,38 @@ function process_operations(operations, isIncome) {
 
 
 export default function StatisticOfOperations(props) {
-    const [navValue, setNavValue] = React.useState('1');
-    const [isIncome, setIsIncome] = React.useState(false);
-
-    var data = process_operations(props.operations, isIncome);
-
-    return (
-        <TabContext value={navValue}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
-                <TabList onChange={(e, value) => setNavValue(value)} aria-label="lab API tabs example">
-                    <Tab label="PAYMENT" value="1" onClick={e => {
-                        setIsIncome(false);
-                        }}/> 
-                    <Tab label="INCOME" value="2" onClick={e => {
-                        setIsIncome(true);
-                    }}/>
-                </TabList>
-            </Box>
-            <TabPanel value="1">
-                <StatTable rows={data}/>
-                <ListOperations operations={props.operations.filter(operation => operation.isIncome === false)} />
-            </TabPanel>
-            <TabPanel value="2">
-                <StatTable rows={data}/>
-                <ListOperations operations={props.operations.filter(operation => operation.isIncome === true)} />
-            </TabPanel>
-        </TabContext>
-        
-        
-    );
+    const [navValue, setNavValue] = useState('1');
+    const [isIncome, setIsIncome] = useState(false);
+    const data = useMemo(() => process_operations(props.operations, isIncome));
+    const incomeOperations = useMemo(() => props.operations.filter(operation => operation.isIncome == true));
+    const paymentOperations = useMemo(() => props.operations.filter(operation => operation.isIncome == false));
+    
+    if(props.operations !== undefined) {
+        return (
+            <TabContext value={navValue}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
+                    <TabList onChange={(e, value) => setNavValue(value)} aria-label="lab API tabs example">
+                        <Tab label="PAYMENT" value="1" onClick={e => {
+                            setIsIncome(false);
+                            }}/> 
+                        <Tab label="INCOME" value="2" onClick={e => {
+                            setIsIncome(true);
+                        }}/>
+                    </TabList>
+                </Box>
+                <TabPanel value="1">
+                    <StatTable rows={data}/>
+                    <ListOperations operations={paymentOperations} />
+                </TabPanel>
+                <TabPanel value="2">
+                    <StatTable rows={data}/>
+                    <ListOperations operations={incomeOperations} />
+                </TabPanel>
+            </TabContext>
+            
+        );
+    }else{
+        return null;
+    }
+    
 }

@@ -8,35 +8,23 @@ import { get_user } from './auth/utils';
 
 
 function App() {
-    const [user, setUser] = useState(undefined);
+    const [user, setUser] = useState();
+
     document.title = 'Finance Contorol';
+
     useEffect(() => {
-          (
-            async () => {
-              let request = await get_user;
-              let response = await request();
-              if(response !== undefined){
-                if(response.status === 200 || response.status === 423){
-                  const content = await response.json();
-                  setUser(content);
-                }
-                else if(response.status === 404 || response.status === 401){
-                  localStorage.removeItem('access_token');
-                  localStorage.removeItem('refresh_token');
-                  setUser(undefined);
-  
-                }
-              }
-              
-            }
-          )();
-    }, [setUser]);
+        (
+          async () => {
+            const content = await get_user({is_content: true});
+            setUser(content);
+          }
+        )();
+    
+    }, []);
 
     return (
         <div className="App">
-            <BrowserRouter>
-                <Nav user={user} setUser={setUser} />
-            </BrowserRouter>
+            <Nav user={user} setUser={setUser} />
         </div>
     );
 }

@@ -9,16 +9,6 @@ import Grid from '@mui/material/Grid';
 
 
 const OperationPrev = (props) => {
-
-    // React.useEffect(() => {
-    //     (
-    //         async () => {
-    //             await convertValue();
-    //         }
-    //     )();
-    // }, []);
-    
-
     return (
             <List
                 sx={{
@@ -26,7 +16,6 @@ const OperationPrev = (props) => {
                     height: '100%',
                     maxWidth: '100%',
                     bgcolor: 'white',
-                    // position: 'relative',
                     overflow: 'auto',
                     maxHeight: '100%',
                     '& ul': { padding: 0 },
@@ -62,7 +51,7 @@ const OperationPrev = (props) => {
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                {props.operation.description !== ""?
+                                {props.operation.description !== "" &&
                                 <ListItemText 
                                     secondaryTypographyProps={{
                                         fontSize: 15,
@@ -73,7 +62,6 @@ const OperationPrev = (props) => {
                                     }}
                                     secondary={props.operation.description}
                                 />
-                                : null
                                 }
                             </Grid>
                         </Grid>
@@ -101,7 +89,6 @@ const OperationPrev = (props) => {
                     </Grid>
             </ListItemButton>
             <Divider />
-            
             </List>
     );
 }

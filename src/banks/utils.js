@@ -1,7 +1,7 @@
 import fx from 'money'
-import { checkToken } from '../auth/utils';
+import { checkToken, get_response } from '../auth/utils';
+import {HOST} from '../auth/utils';
 
-const HOST = 'http://localhost:10000';
 
 const SERVICE_NAME = 'bankAccounts';
 
@@ -28,121 +28,239 @@ export function convertValue(from_, to_, value){
 }
 
 
-async function create_bill_f(body){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/bills/api/create-bill`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'jwt-assertion': localStorage.getItem('access_token')
-                },
-                credentials: 'include',
-                body: JSON.stringify(body)
-            });
+export async function create_bill(body, is_content=false, ...args){
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/create-bill`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt-assertion': localStorage.getItem('access_token')
+            },
+            credentials: 'include',
+            body: JSON.stringify(body)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'create bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let create_bill = checkToken(create_bill_f);
 
 
-async function edit_bill_f(body){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/bills/api/bill`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'jwt-assertion': localStorage.getItem('access_token')
-                },
-                body: JSON.stringify(body)
-    });
-    return response;
-}
-export let edit_bill = checkToken(edit_bill_f);
-
-
-async function bill_list_f(){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/bills/api/list`, {
-                headers: {
-                    "jwt-assertion": localStorage.getItem('access_token')
-                }
+export async function edit_bill(body, is_content=false, ...args){
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/bill`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt-assertion': localStorage.getItem('access_token')
+            },
+            body: JSON.stringify(body)
+            })).then(response => response)
+            .catch((error) => {
+                throw new Error("Faild fetch 'edit bill'")
             })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let bill_list = checkToken(bill_list_f);
 
 
-async function category_list_f(){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/operations/api/categories`, {
-        headers: {
-            "jwt-assertion": localStorage.getItem('access_token'),
-        }
-    })
-    return response;    
-}
-export let category_list = checkToken(category_list_f);
+export async function bill_list(is_content=false, ...args){
 
-
-async function create_category_f(body){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/operations/api/category`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'jwt-assertion': localStorage.getItem('access_token')
-                },
-                body: JSON.stringify(body)
-            });
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/list`, {
+            headers: {"jwt-assertion": localStorage.getItem('access_token')},
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'bill list'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let create_category = checkToken(create_category_f);
 
 
-async function add_operation_f(body, uuid){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/operations/api/operation`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'jwt-assertion': localStorage.getItem('access_token'),
-                    'uuid': uuid
-                },
-                body: JSON.stringify(body)
-            });
+export async function category_list(is_content=false, ...args){
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/categories`, {
+            headers: {
+                "jwt-assertion": localStorage.getItem('access_token'),
+            }
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'category list'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
+    return response;   
+}
+
+
+export async function create_category(body, is_content=false, ...args){
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/category`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt-assertion': localStorage.getItem('access_token')
+            },
+            body: JSON.stringify(body)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'create category'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
+    return response; 
+}
+
+
+export async function add_operation(body, uuid, is_content=false){
+
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/operation`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'uuid': uuid
+            },
+            body: JSON.stringify(body)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'add operation'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, body, uuid).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let add_operation = checkToken(add_operation_f);
 
 
-async function edit_operation_f(body){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/operations/api/operation`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'jwt-assertion': localStorage.getItem('access_token'),
-                },
-                body: JSON.stringify(body)
-            });
+export async function edit_operation(body, uuid, is_content=false){
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/operation`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt-assertion': localStorage.getItem('access_token'),
+            },
+            body: JSON.stringify(body)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'edit operation'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, body, uuid).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let edit_operation = checkToken(edit_operation_f);
 
 
-async function operations_of_bill_f(uuid){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/operations/api/operations-of-bill`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'jwt-assertion': localStorage.getItem('access_token'),
-                    'uuid': uuid
-                }
-            });
+export async function operations_of_bill(uuid, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/operations-of-bill`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'uuid': uuid
+            }
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'operations of bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, uuid).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let operations_of_bill = checkToken(operations_of_bill_f);
 
 
-async function my_operations_f(){
-    const response = await fetch(`${HOST}/${SERVICE_NAME}/operations/api/operations`, {
-                headers: {
-                    'jwt-assertion': localStorage.getItem('access_token'),
-                }
-            });
+export async function my_operations(uuid, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/operations`, {
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+            }
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'my operations'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, uuid).then(response => response).catch((error) => console.log(error))
     return response;
 }
-export let my_operations = checkToken(my_operations_f);
 
 
+export async function delete_bill(uuid, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/bill`, {
+            method: 'DELETE',
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'uuid': uuid,
+            }
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'delete_bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, uuid).then(response => response).catch((error) => console.log(error))
+    return response;
+}
+
+
+export async function filter_operations(data, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/filter-operations`, {
+            method: 'POST',
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'delete_bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, data).then(response => response).catch((error) => console.log(error))
+    return response;
+}
+
+
+export async function search_request(data, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/operations/api/search`, {
+            method: 'POST',
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'delete_bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, data).then(response => response).catch((error) => console.log(error))
+    return response;
+}
+
+
+export async function transfer_bill(data, is_content=false) {
+    const request = async () => {
+        return await (fetch(`${HOST}/${SERVICE_NAME}/bills/api/transfer`, {
+            method: 'POST',
+            headers: {
+                'jwt-assertion': localStorage.getItem('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })).then(response => response)
+        .catch((error) => {
+            throw new Error("Faild fetch 'delete_bill'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, data).then(response => response).catch((error) => console.log(error))
+    return response;
+}

@@ -21,37 +21,27 @@ const style = {
     p: 4,
 };
 
-const ChooseCategoryModal = (props) => {
+const ChooseCategoryModal = ({openModal, setOpen, categoryList, setCategory, isIncome}) => {
     const [categoryNameCreate, setCategoryNameCreate] = React.useState('');
     const [isClickedCreateCategory, setIsClickedCreateCategory] = React.useState(false);
 
     const handleClose = () => {
-        props.setOpen(false);
+        setOpen(false);
     }
 
-    const show = () => {
-        if(isClickedCreateCategory === true) {
-            setIsClickedCreateCategory(false);
-        }
-        else{
-            setIsClickedCreateCategory(true)
-        }
-    }
-    
     const add_category = async (e) => {
         
         if(categoryNameCreate !== ""){
+            console.log(isIncome)
             var name = categoryNameCreate;
-            var isIncome = props.isIncome;
             var body = {
                 name: name,
                 isIncome: isIncome
             }
-            const request = await create_category;
-            const response = await request(body);
-            if(response !== undefined){
-                const content = await response.json();
-                props.categoryList.push(content);
+
+            const content = await create_category(body, {is_content: true});
+            if(content !== undefined && categoryList !== undefined){
+                categoryList.push(content);
             }
         }
         setIsClickedCreateCategory(false);
@@ -61,13 +51,13 @@ const ChooseCategoryModal = (props) => {
         <div>
 
         <Modal
-            open={props.openModal}
+            open={openModal}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <CategoryList handleClose={handleClose} categoryList={props.categoryList} isIncome={props.isIncome} setCategory={props.setCategory}/>
+                <CategoryList handleClose={handleClose} categoryList={categoryList} isIncome={isIncome} setCategory={setCategory}/>
                 
                 {
                     isClickedCreateCategory?
@@ -84,7 +74,7 @@ const ChooseCategoryModal = (props) => {
                         />
                     </Box>
                     : 
-                    <Fab sx={{ color: 'success.dark', bgcolor: '#B9C4C9', mr: 3}} aria-label="add" onClick={show}>
+                    <Fab sx={{ color: 'success.dark', bgcolor: '#B9C4C9', mr: 3}} aria-label="add" onClick={e => setIsClickedCreateCategory(!isClickedCreateCategory)}>
                         <AddIcon />
                     </Fab>
                 }
