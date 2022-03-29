@@ -167,3 +167,24 @@ export async function register(body){
             });
     return response;
 }
+
+
+export async function set_payment_plan(body, is_content=false, ...args){
+    
+    const request = async () => {
+        return await (fetch(BASE_URL + 'stripe/set-subscription', {
+            method: 'POST',
+            headers: {
+                "jwt-assertion": localStorage.getItem('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body),
+        })).then(response => response)
+        .catch((error) => {
+            console.log(error)
+            throw new Error("Faild fetch 'set_payment_plan'")
+        })
+    }
+    const response = await get_response(await checkToken(request), is_content.is_content, ...args).then(response => response).catch((error) => console.log(error))
+    return response;
+}

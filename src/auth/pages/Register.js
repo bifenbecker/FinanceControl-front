@@ -6,16 +6,20 @@ import TextField from '@mui/material/TextField';
 
 import { register } from '../utils';
 
+import SelectPaymentPlanModal from '../components/SelectPaymentPlanModal';
+
 
 const Register = (props) => {
     const [username, setUserName] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
     const [errorUserName, setErrorUserName] = useState('');
     const [errorName, setErrorName] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
+
 
     
     const validate_date = (name: string, email: string, password: string, username: string) => {
@@ -97,39 +101,53 @@ const Register = (props) => {
                 noValidate
                 autoComplete="off"
                 >
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="username Required"
-                    placeholder="Username"
-                    helperText={errorUserName}
-                    onChange={e => setUserName(e.target.value)} 
-                />
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Name Required"
-                    placeholder="Name"
-                    helperText={errorName}
-                    onChange={e => setName(e.target.value)} 
-                />
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Email Required"
-                    placeholder="Email"
-                    helperText={errorEmail}
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Password Required"
-                    placeholder="Password"
-                    helperText={errorPassword}
-                    type="password"
-                    onChange={e => setPassword(e.target.value)}
-                />
+                    <div className='mb-5'>
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="username Required"
+                            placeholder="Username"
+                            helperText={errorUserName}
+                            onChange={e => setUserName(e.target.value)} 
+                        />
+                    </div>
+                    <div className='mb-5'>
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="Name Required"
+                            placeholder="Name"
+                            helperText={errorName}
+                            onChange={e => setName(e.target.value)} 
+                        />      
+                    </div>
+                    <div className='mb-5'>
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="Email Required"
+                            placeholder="Email"
+                            helperText={errorEmail}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className='mb-5'>
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="Password Required"
+                            placeholder="Password"
+                            helperText={errorPassword}
+                            type="password"
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                    </div>
+                    {/* <Button variant="outlined" onClick={(e) => {setShowPlansModal(true)}}>Get the plan now!</Button>
+                    <SelectPaymentPlanModal setPaymentPlan={setPaymentPlan} setOpen={setShowPlansModal} openModal={showPlansModal} currentPlan={paymentPlan}/>
+                    <div>
+                        <label>Your plan is</label>
+                        <p>{paymentPlan.name} - {paymentPlan.price} $</p>
+                    </div> */}
             </Box>
             <Button variant="outlined" onClick={submit}>Submit</Button>
  

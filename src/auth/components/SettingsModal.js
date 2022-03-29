@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-
+import Button from '@mui/material/Button';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+
+import SelectPaymentPlanModal from './SelectPaymentPlanModal';
 
 
 import { get_currencies, update_settings } from '../utils';
@@ -26,6 +28,8 @@ const style = {
 const SettingsModal = (props) => {
     const [currency, setCurrency] = useState();
     const [currencyList, setCurrencyList] = useState();
+    const [showPlansModal, setShowPlansModal] = useState(false);
+    const [paymentPlan, setPaymentPlan] = useState(props.user.current_sub.plan? props.user.current_sub.plan : {'name': 'Free', 'price': 0.0});
 
     const handleChange = async (event) => {
         setCurrency(event.target.value);
@@ -51,7 +55,6 @@ const SettingsModal = (props) => {
             }
         )();
     }, [])
-
     return (
         <div>
 
@@ -62,21 +65,27 @@ const SettingsModal = (props) => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-            <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Currency</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={currency}
-                    defaultValue={props.user?props.user.settings.currency.name:null}
-                    label="Currency"
-                    onChange={handleChange}
-                >
-                    {
-                        !!currencyList && currencyList.map(currency => (<MenuItem value={currency.name}>{currency.name + " - " + currency.char}</MenuItem>))         
-                    }
-                </Select>
-            </FormControl>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={currency}
+                        defaultValue={props.user?props.user.settings.currency.name:null}
+                        label="Currency"
+                        onChange={handleChange}
+                    >
+                        {
+                            !!currencyList && currencyList.map(currency => (<MenuItem value={currency.name}>{currency.name + " - " + currency.char}</MenuItem>))         
+                        }
+                    </Select>
+                </FormControl>
+                <Button variant="outlined" onClick={(e) => {setShowPlansModal(true)}} fullWidth className='mt-3'>Get the subscription now!</Button>
+                <SelectPaymentPlanModal user={props.user} setPaymentPlan={setPaymentPlan} setOpen={setShowPlansModal} openModal={showPlansModal} currentPlan={paymentPlan}/>
+                <div>
+                    <label>Your plan is</label>
+                    <p>{paymentPlan.name} - {paymentPlan.price / 100} $</p>
+                </div>
             </Box>
         </Modal>
         </div>

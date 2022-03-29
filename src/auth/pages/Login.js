@@ -75,23 +75,29 @@ const Login = (props) => {
                 noValidate
                 autoComplete="off"
                 >
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Email Required"
-                    placeholder="Email"
-                    helperText={errorEmail}
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Password Required"
-                    placeholder="Password"
-                    helperText={errorPassword}
-                    type="password"
-                    onChange={e => setPassword(e.target.value)}
-                />
+                    <div>
+                        <TextField
+                            required
+                            id="outlined-required"
+                            label="Email Required"
+                            placeholder="Email"
+                            helperText={errorEmail}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+                    </div>
+                
+                <div>
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Password Required"
+                        placeholder="Password"
+                        helperText={errorPassword}
+                        type="password"
+                        onChange={e => setPassword(e.target.value)}
+                    />
+                </div>
+                
             </Box>
             <Button variant="outlined" onClick={submit}>Sign in</Button>
  
