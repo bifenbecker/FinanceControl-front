@@ -24,6 +24,9 @@ import MyOperations from '../../banks/pages/MyOperations';
 import SearchInput from './SearchInput';
 import SearchView from '../../banks/pages/SearchView';
 
+import PaymentsMenu from '../../payments/PaymentsMenu';
+
+
 
 const Nav = (props) => {
     const [value, setNavValue] = useState('1');
@@ -50,6 +53,7 @@ const Nav = (props) => {
         <Tab icon={<HomeIcon />} label="HOME" value="1" />
         <BillsMenu settings={props.user?.settings} setNavValue={setNavValue}/>
         <OperationsMenu settings={props.user?.settings} setNavValue={setNavValue}/>
+        <PaymentsMenu user={props.user} handleChange={handleChange} />
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}><SearchInput setNavValue={setNavValue} setSearchRequest={setSearchRequest}/></Box>
     </TabList>
     }

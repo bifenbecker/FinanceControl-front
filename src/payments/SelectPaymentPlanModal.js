@@ -3,7 +3,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-
+import CloseIcon from '@mui/icons-material/Close';
 import PaymentPlanCard from './PaymentPlanCard';
 import { PlayLessonOutlined } from '@mui/icons-material';
 import BillingModal from './BillingModal';
@@ -13,7 +13,7 @@ import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 
-import {set_payment_plan} from '../utils';
+import {set_payment_plan} from '../auth/utils';
 
 
 
@@ -92,8 +92,10 @@ const SelectPaymentPlanModal = ({user, setPaymentPlan, setOpen, openModal, curre
                     <Grid item xs={8}>
                         <h2>Available plans!</h2>
                     </Grid>
-                    <Grid item xs={4}>
-                        
+                    <Grid item xs={3}>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <CloseIcon fontSize="medium" onClick={e =>  handleClose() }/>
                     </Grid>
                     <Grid item xs={12} sx={{display: 'flex'}}>
                         {cards}

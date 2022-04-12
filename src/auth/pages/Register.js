@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 
 import { register } from '../utils';
 
-import SelectPaymentPlanModal from '../components/SelectPaymentPlanModal';
 
 
 const Register = (props) => {
@@ -142,12 +141,6 @@ const Register = (props) => {
                             onChange={e => setPassword(e.target.value)}
                         />
                     </div>
-                    {/* <Button variant="outlined" onClick={(e) => {setShowPlansModal(true)}}>Get the plan now!</Button>
-                    <SelectPaymentPlanModal setPaymentPlan={setPaymentPlan} setOpen={setShowPlansModal} openModal={showPlansModal} currentPlan={paymentPlan}/>
-                    <div>
-                        <label>Your plan is</label>
-                        <p>{paymentPlan.name} - {paymentPlan.price} $</p>
-                    </div> */}
             </Box>
             <Button variant="outlined" onClick={submit}>Submit</Button>
  
