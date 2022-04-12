@@ -17,6 +17,7 @@ const BillsMenu = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openCreateBillModal, setCreateBillModal] = React.useState(false);
     const open = Boolean(anchorEl);
+    
     const handleClick = (event) => {
         setCreateBillModal(false);
         setAnchorEl(event.currentTarget);

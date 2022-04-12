@@ -14,10 +14,9 @@ import TabPanel from '@mui/lab/TabPanel';
 
 
 import BaseNavTab from './Tabs/BaseNavTab';
-import PremiumNavTab from './Tabs/PremiumNavTab';
 import UnloggedTab from './Tabs/UnloggedTab';
 
-import PaymentsMenu from '../../payments/PaymentsMenu';
+
 
 
 
@@ -29,12 +28,7 @@ const Nav = ({user, setUser}) => {
         nav_tab = <UnloggedTab setUser={setUser} value={value} setNavValue={setNavValue}/>
     }
     else{
-        if(user.current_sub.plan.name === 'Free'){
-            nav_tab = <BaseNavTab user={user} setUser={setUser} value={value} setNavValue={setNavValue}/>
-        }
-        else{
-            nav_tab = <PremiumNavTab user={user} setUser={setUser} value={value} setNavValue={setNavValue}/>
-        }
+        nav_tab = <BaseNavTab user={user} setUser={setUser} value={value} setNavValue={setNavValue}/>
     }
     return (
         <Box>{nav_tab}</Box>

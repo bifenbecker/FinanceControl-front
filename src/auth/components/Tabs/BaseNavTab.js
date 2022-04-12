@@ -24,6 +24,9 @@ import MyOperations from '../../../banks/pages/MyOperations';
 import SearchInput from '../SearchInput';
 import SearchView from '../../../banks/pages/SearchView';
 
+import PaymentsMenu from '../../../payments/PaymentsMenu';
+
+
 
 const BaseNavTab = ({user, setUser, value, setNavValue}) => {
     const [activeBill, setActiveBill] = useState();
@@ -41,24 +44,29 @@ const BaseNavTab = ({user, setUser, value, setNavValue}) => {
         setNavValue(newValue);
     };
 
+    
     let tablist;
 
-    if(user !== undefined && user.is_active === true){
+    if(user.is_active === true){
         tablist = <TabList onChange={handleChange}>
-        <ProfileMenu logout={logout} user={user} setUser={setUser} />
-        <Tab icon={<HomeIcon />} label="HOME" value="1" />
-        <BillsMenu settings={user?.settings} setNavValue={setNavValue}/>
-        <OperationsMenu settings={user?.settings} setNavValue={setNavValue}/>
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}><SearchInput setNavValue={setNavValue} setSearchRequest={setSearchRequest}/></Box>
-    </TabList>
+                    <ProfileMenu logout={logout} user={user} setUser={setUser} />
+                    <Tab icon={<HomeIcon />} label="HOME" value="1" />
+                    <BillsMenu settings={user?.settings} setNavValue={setNavValue}/>
+                    <OperationsMenu settings={user?.settings} setNavValue={setNavValue}/>
+                    <PaymentsMenu user={user} handleChange={handleChange}/>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}><SearchInput setNavValue={setNavValue} setSearchRequest={setSearchRequest}/></Box>
+                </TabList>
     }
     else{
-        tablist = <TabList onChange={handleChange} aria-label="lab API tabs example">
-        <Tab icon={<HomeIcon />} label="HOME" value="1" />
-        <Tab icon={<LoginIcon />} label="LOGIN" value="2" />
-        <Tab icon={<AppRegistrationIcon />} label="REGISTER" value="3"/>
-    </TabList>
+        tablist = <TabList onChange={handleChange}>
+                    <ProfileMenu logout={logout} user={user} setUser={setUser} />
+                    <Tab icon={<HomeIcon />} label="HOME" value="1" />
+                    <BillsMenu settings={user?.settings} setNavValue={setNavValue}/>
+                    <OperationsMenu settings={user?.settings} setNavValue={setNavValue}/>
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}><SearchInput setNavValue={setNavValue} setSearchRequest={setSearchRequest}/></Box>
+                </TabList>
     }
+
     return (
         <TabContext value={value}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

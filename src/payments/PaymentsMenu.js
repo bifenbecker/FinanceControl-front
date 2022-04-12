@@ -23,7 +23,7 @@ const PaymentsMenu = ({ user, handleChange}) => {
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
-        // setPaymentsPlansModal(false);
+        setSelectPlansModal(false);
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
